@@ -170,6 +170,15 @@ main{max-width:var(--maxw);margin:0 auto;padding:22px 20px 80px}
 
 /* footer */
 footer{max-width:var(--maxw);margin:0 auto;padding:24px 20px 50px;color:var(--ink-2);font-size:12px;border-top:1px solid var(--line);text-align:center}
+/* 拼读 / 词例 */
+.pex{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.phw{display:inline-flex;align-items:center;background:var(--surface-2);border-radius:8px;padding:3px 6px 3px 10px;font-size:14.5px;font-weight:500}
+.phw i{font-style:normal;color:var(--ink-2);font-size:12px;font-weight:400;margin-left:4px}
+.prow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.prow:last-child{border-bottom:none}
+.pipa{font-family:var(--serif);color:var(--teal);background:var(--teal-soft);padding:2px 10px;border-radius:6px;font-size:14px;min-width:50px;text-align:center}
+.pcond{font-size:12.5px;color:var(--ink-2);min-width:130px;flex:0 0 auto}
+
 /* 朗读按钮 */
 .say{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;padding:0;border:none;background:transparent;color:var(--ink-2);cursor:pointer;border-radius:6px;vertical-align:baseline;transition:.12s;opacity:.55}
 .say:hover{background:var(--accent-soft);color:var(--accent);opacity:1}

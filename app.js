@@ -18,7 +18,10 @@ const MODULES = [
  {key:'polysemy', ic:'⇆', col:'var(--purple)', bg:'var(--purple-soft)', title:'一词多义', sub:'同一拼写，多种含义', modes:['browse','flashcard','quiz']},
  {key:'heteronyms', ic:'♪', col:'var(--blue)', bg:'var(--blue-soft)', title:'同形异音', sub:'重音/读音变，词义变', modes:['browse','flashcard','quiz']},
  {key:'synonyms', ic:'≈', col:'var(--purple)', bg:'var(--purple-soft)', title:'近义词辨析', sub:'相近词的用法区别', modes:['browse','flashcard','quiz']},
- {key:'antonyms', ic:'⇄', col:'var(--accent)', bg:'var(--accent-soft)', title:'反义词', sub:'成对掌握，事半功倍', modes:['browse','flashcard','quiz']}
+ {key:'antonyms', ic:'⇄', col:'var(--accent)', bg:'var(--accent-soft)', title:'反义词', sub:'成对掌握，事半功倍', modes:['browse','flashcard','quiz']},
+ {key:'britam', ic:'🌍', col:'var(--blue)', bg:'var(--blue-soft)', title:'英美差异', sub:'用词·拼写·发音', modes:['browse','flashcard','quiz']},
+ {key:'thematic', ic:'📚', col:'var(--gold)', bg:'var(--gold-soft)', title:'主题词汇', sub:'按类别成组记忆', modes:['browse','flashcard']},
+ {key:'phonics', ic:'🔤', col:'var(--teal)', bg:'var(--teal-soft)', title:'读音规则', sub:'看词能读 · 自然拼读', modes:['browse']}
 ];
 const MOD = Object.fromEntries(MODULES.map(m=>[m.key,m]));
 const COUNTS = {
@@ -52,6 +55,11 @@ function deckOf(mod){
    {k:h.ipa+'|'+w[0], front:w[1], hint:'/'+h.ipa+'/  —  怎么拼?', back:w[0], mc:w[1]+'   /'+h.ipa+'/', sub:'同音异义 · 听音辨形'}))); return out; }
  if(mod==='synonyms'){ const out=[]; V.synonyms.forEach(s=>s.group.forEach(g=>out.push(
    {k:(s.note||s.cat)+'|'+g[0], front:g[0], hint:'意思 / 用法?', back:g[0], mc:g[1], sub:'近义辨析 · '+(s.note||s.cat)}))); return out; }
+ if(mod==='thematic'){ const out=[]; V.thematic.forEach(c=>c.items.forEach(it=>out.push(
+   {k:c.cat+'|'+it[0], front:it[1], hint:'('+c.cat+')  英文?', back:it[0], mc:it[1], sub:'主题词汇 · '+c.cat}))); return out; }
+ if(mod==='britam'){ const out=[];
+   V.britam.vocab.forEach(v=>out.push({k:'v|'+v[0], front:v[0]+'  (英)', hint:v[2]+'  —  美式怎么说?', back:v[1], mc:v[2]+'   （美式）', sub:'英美差异 · 用词'}));
+   V.britam.spelling.forEach(s=>out.push({k:'s|'+s.b, front:s.b+'  (英)', hint:'美式拼写?', back:s.b2, mc:s.cn, sub:'英美差异 · 拼写'})); return out; }
  return [];
 }
 function quizOf(mod){
@@ -84,6 +92,10 @@ function quizOf(mod){
    return V.synonyms.flatMap(s=>s.group.map(g=>{ let opts=s.group.map(x=>x[1]);
      if(opts.length<3) opts=opts.concat(shuffle(allGloss.filter(x=>!opts.includes(x))).slice(0,3-opts.length));
      return {stem:g[0], sub:'选出它的含义 / 用法', answer:g[1], options:shuffle(opts)}; })); }
+ if(mod==='britam'){ const all=V.britam.vocab;
+   return all.map(v=>{ const pool=all.filter(x=>x[1]!==v[1]).map(x=>x[1]);
+     const opts=shuffle([v[1],...shuffle(pool).slice(0,3)]);
+     return {stem:v[0]+'  (英式)', sub:v[2]+'  —  选出美式说法', answer:v[1], options:opts}; }); }
  return [];
 }
 
@@ -119,7 +131,10 @@ function secHeader(m){
   polysemy:'同一个拼写承载多个意思，靠上下文判断。',
   heteronyms:'拼写相同，但重音或读音不同，意思也随之改变（名词重音在前，动词在后）。',
   synonyms:'意思相近但用法有别。辨析清楚才能用得地道。',
-  antonyms:'成对的反义词。一起记忆，相互强化。'};
+  antonyms:'成对的反义词。一起记忆，相互强化。',
+  britam:'同一个意思，英国和美国在用词、拼写、发音上常有差别。对照着记，读写都不出错。',
+  thematic:'把同一场景的词按类别成组记忆，用时成串提取。',
+  phonics:'字母与读音的对应规律。掌握后看到生词也能读出来——每个例词都可点击朗读。'};
  let modes='';
  if(m.modes.length>1){
    modes='<div class="modes">'+m.modes.map(md=>{
@@ -136,7 +151,12 @@ function renderHome(){
  const cards=MODULES.map(m=>{
    const tot=deckTotal(m.key); const kn=known(m.key);
    const pct=tot?Math.round(kn/tot*100):0;
-   const cnt = m.key==='formation'?'4 类':(COUNTS[m.key]+' 组');
+   let cnt;
+   if(m.key==='formation') cnt='4 类';
+   else if(m.key==='phonics') cnt='拼读规则';
+   else if(m.key==='thematic') cnt=V.thematic.length+' 类';
+   else if(m.key==='britam') cnt=V.britam.vocab.length+' 组';
+   else cnt=COUNTS[m.key]+' 组';
    const prog = (m.modes.includes('flashcard')||m.modes.includes('quiz'))&&tot?`<p style="margin-top:8px;font-size:12px;color:var(--ink-2)">已掌握 ${kn}/${tot} · ${pct}%</p>`:'';
    return `<div class="mod" onclick="__go('${m.key}')">
      <div class="ic" style="background:${m.bg};color:${m.col}">${m.ic}</div>
@@ -165,6 +185,10 @@ function estimateWords(){
  n+=V.polysemy.length+V.heteronyms.length*2+V.antonyms.length*2;
  V.synonyms.forEach(s=>n+=s.group.length);
  Object.values(V.formation).forEach(m=>m.groups.forEach(g=>n+=g.items.length));
+ n+=V.britam.vocab.length*2+V.britam.spelling.length;
+ V.thematic.forEach(c=>n+=c.items.length);
+ V.phonics.vowels.forEach(v=>v.rows.forEach(r=>n+=r.ex.length));
+ V.phonics.combos.forEach(c=>n+=c.ex.length); V.phonics.consonants.forEach(c=>n+=c.ex.length);
  return Math.round(n/10)*10;
 }
 
@@ -178,6 +202,9 @@ function renderBrowse(mod){
  if(mod==='heteronyms') return browseHeteronyms();
  if(mod==='synonyms') return browseSynonyms();
  if(mod==='antonyms') return browseAntonyms();
+ if(mod==='britam') return browseBritam();
+ if(mod==='thematic') return browseThematic();
+ if(mod==='phonics') return browsePhonics();
  return '';
 }
 function affixCard(a){
@@ -254,6 +281,41 @@ function browseAntonyms(){
    `<div class="pcard"><div class="anto"><div class="side"><b>${p.a[0]}</b>${say(p.a[0])}<span class="mc">${p.a[1]}</span></div><span class="ar3">⇄</span><div class="side r"><b>${p.b[0]}</b>${say(p.b[0])}<span class="mc">${p.b[1]}</span></div></div></div>`
  ).join(''); });
  return html+'</div>';
+}
+
+function browseBritam(){
+ let h='<div class="affix-list">';
+ h+='<div class="cat-band">用词差异（英 → 美）</div><div class="pair-list" style="grid-column:1/-1">';
+ h+=V.britam.vocab.map(v=>`<div class="pcard"><div class="anto"><div class="side"><b>${v[0]}</b>${say(v[0])}<span class="mc">英</span></div><span class="ar3">→</span><div class="side r"><b>${v[1]}</b>${say(v[1])}<span class="mc">美</span></div></div><div style="text-align:center;font-size:12.5px;color:var(--ink-2);margin-top:5px">${v[2]}</div></div>`).join('');
+ h+='</div><div class="cat-band">拼写差异</div><div class="pair-list" style="grid-column:1/-1">';
+ h+=V.britam.spelling.map(s=>`<div class="pcard"><div class="ipa" style="color:var(--gold);background:var(--gold-soft)">${s.p}</div><div class="anto"><div class="side"><b>${s.b}</b>${say(s.b)}<span class="mc">英</span></div><span class="ar3">→</span><div class="side r"><b>${s.b2}</b>${say(s.b2)}<span class="mc">美</span></div></div><div style="font-size:12.5px;color:var(--ink-2);margin-top:6px">${s.cn}</div></div>`).join('');
+ h+='</div><div class="cat-band">发音差异</div>';
+ h+=V.britam.pronun.map(p=>{ const ex=p.ex.map(e=>`<span class="phw">${e[0]}${say(e[0])}<i>${e[1]}</i></span>`).join('');
+   return `<div class="affix" style="grid-column:1/-1"><div class="affix-top" style="cursor:default"><div class="m"><b>${p.rule}</b><span>英 [${p.b}]　→　美 [${p.a}]</span></div></div><div class="affix-body" style="display:block"><div class="pex">${ex}</div></div></div>`; }).join('');
+ return h+'</div>';
+}
+function browseThematic(){
+ return '<div class="affix-list">'+V.thematic.map(c=>{
+   const items=c.items.map(it=>`<div class="mem"><b>${it[0]}</b>${say(it[0])}<span class="mc">${it[1]}</span></div>`).join('');
+   return `<div class="fam"><span class="root" style="color:var(--gold);background:var(--gold-soft)">${c.cat} · ${c.en}</span>${items}</div>`;
+ }).join('')+'</div>';
+}
+function browsePhonics(){
+ const exHtml=arr=>arr.map(e=>`<span class="phw">${e[0]}${say(e[0])}<i>${e[1]}</i></span>`).join('');
+ let h='<div class="cat-band">单个元音字母</div><div class="affix-list">';
+ V.phonics.vowels.forEach(v=>{ const rows=v.rows.map(r=>`<div class="prow"><span class="pipa">[${r.ipa}]</span><span class="pcond">${r.cond}</span><div class="pex">${exHtml(r.ex)}</div></div>`).join('');
+   h+=`<div class="affix" style="grid-column:1/-1"><div class="affix-top" style="cursor:default"><span class="chip" style="background:var(--teal-soft);color:var(--teal)">${v.l}</span><div class="m"><b>字母 ${v.l}</b></div></div><div class="affix-body" style="display:block">${rows}</div></div>`; });
+ h+='</div><div class="cat-band">元音字母组合</div><div class="pair-list">';
+ V.phonics.combos.forEach(c=>h+=`<div class="pcard"><div class="ipa" style="color:var(--teal);background:var(--teal-soft)">${c.c}　[${c.ipa}]</div><div class="pex">${exHtml(c.ex)}</div></div>`);
+ h+='</div><div class="cat-band">辅音字母 / 组合</div><div class="pair-list">';
+ V.phonics.consonants.forEach(c=>h+=`<div class="pcard"><div class="ipa" style="color:var(--teal);background:var(--teal-soft)">${c.c}　[${c.ipa}]</div>${c.note?`<div style="font-size:12px;color:var(--ink-2);margin-bottom:4px">${c.note}</div>`:''}<div class="pex">${exHtml(c.ex)}</div></div>`);
+ h+='</div><div class="cat-band">不发音的字母</div><div class="pair-list">';
+ V.phonics.silent.forEach(s=>h+=`<div class="pcard"><div class="ipa" style="color:var(--accent);background:var(--accent-soft)">${s.l}</div><div class="pex">${exHtml(s.ex)}</div></div>`);
+ h+='</div><div class="cat-band">常见词尾</div><div class="pair-list">';
+ V.phonics.endings.forEach(c=>h+=`<div class="pcard"><div class="ipa" style="color:var(--teal);background:var(--teal-soft)">${c.c}　[${c.ipa}]</div><div class="pex">${exHtml(c.ex)}</div></div>`);
+ h+='</div><div class="cat-band">音节与重读规律</div>';
+ h+='<div class="syn">'+V.phonics.stress.map(s=>`<div class="it" style="display:block;padding:8px 0"><span style="font-size:14px;line-height:1.6">${s}</span></div>`).join('')+'</div>';
+ return h;
 }
 
 /* ---------- 抽认卡引擎 ---------- */
@@ -339,6 +401,10 @@ function buildIndex(){
  V.synonyms.forEach(s=>s.group.forEach(g=>ix.push({mod:'synonyms',en:g[0],cn:g[1],extra:s.note||''})));
  V.antonyms.forEach(p=>{ix.push({mod:'antonyms',en:p.a[0],cn:p.a[1],extra:'⇄ '+p.b[0]});ix.push({mod:'antonyms',en:p.b[0],cn:p.b[1],extra:'⇄ '+p.a[0]});});
  Object.values(V.formation).forEach(m=>m.groups.forEach(g=>g.items.forEach(it=>ix.push({mod:'formation',en:it[0],cn:it[1],extra:m.title}))));
+ V.britam.vocab.forEach(v=>{ ix.push({mod:'britam',en:v[0],cn:v[2],extra:'英 · 美 = '+v[1]}); ix.push({mod:'britam',en:v[1],cn:v[2],extra:'美 · 英 = '+v[0]}); });
+ V.thematic.forEach(c=>c.items.forEach(it=>ix.push({mod:'thematic',en:it[0],cn:it[1],extra:c.cat})));
+ V.phonics.vowels.forEach(v=>v.rows.forEach(r=>r.ex.forEach(e=>ix.push({mod:'phonics',en:e[0],cn:e[1],extra:'['+r.ipa+'] 字母 '+v.l}))));
+ V.phonics.combos.forEach(c=>c.ex.forEach(e=>ix.push({mod:'phonics',en:e[0],cn:e[1],extra:c.c+' ['+c.ipa+']'})));
  return ix;
 }
 function doSearch(q){

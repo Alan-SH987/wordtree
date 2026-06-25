@@ -576,5 +576,136 @@ antonyms: [
  {cat:"名词", a:["friend","朋友"], b:["enemy","敌人"]},
  {cat:"名词", a:["beginning","开始"], b:["end","结束"]},
  {cat:"名词", a:["cause","原因"], b:["effect","结果"]}
-]
+],
+
+/* ===================== 英美差异 ===================== */
+britam: {
+ vocab: [
+  ["lift","elevator","电梯"],["flat","apartment","公寓"],["film","movie","电影"],
+  ["biscuit","cookie","饼干"],["sweets","candy","糖果"],["petrol","gas","汽油"],
+  ["lorry","truck","卡车"],["underground / tube","subway","地铁"],["pavement","sidewalk","人行道"],
+  ["railway","railroad","铁路"],["post","mail","邮寄"],["postman","mailman","邮递员"],
+  ["autumn","fall","秋天"],["trousers","pants","裤子"],["rubber","eraser","橡皮"],
+  ["holiday","vacation","假期"],["queue","line","排队"],["football","soccer","足球"],
+  ["chips","fries","薯条"],["aeroplane","airplane","飞机"],["shop","store","商店"],
+  ["ground floor","first floor","一楼"],["maths","math","数学"],["timetable","schedule","时间表"]
+ ],
+ spelling: [
+  {p:"-our → -or", b:"colour",b2:"color", cn:"颜色（labour/labor, favour/favor, neighbour/neighbor, honour/honor）"},
+  {p:"-re → -er", b:"centre",b2:"center", cn:"中心（theatre/theater, metre/meter, litre/liter）"},
+  {p:"-ise → -ize", b:"organise",b2:"organize", cn:"组织（realise/realize, recognise/recognize；-ize 英式亦可）"},
+  {p:"-ce → -se", b:"defence",b2:"defense", cn:"防御（licence/license, offence/offense）"},
+  {p:"-ll- → -l-", b:"traveller",b2:"traveler", cn:"旅行者（cancelled/canceled, modelling/modeling）"},
+  {p:"-ogue → -og", b:"catalogue",b2:"catalog", cn:"目录（dialogue/dialog）"},
+  {p:"其他", b:"tyre",b2:"tire", cn:"轮胎（grey/gray 灰, programme/program 节目, cheque/check 支票）"}
+ ],
+ pronun: [
+  {rule:"字母 a 在 ask 类词中", b:"ɑː", a:"æ", ex:[["ask","问"],["class","班级"],["after","以后"],["dance","跳舞"]]},
+  {rule:"字母 o 在 box 类词中", b:"ɒ", a:"ɑː", ex:[["box","盒子"],["hot","热的"],["got","得到"],["stop","停"]]},
+  {rule:"词中/词尾的 r（美式卷舌、发音；英式常不发）", b:"不发 r", a:"发 r", ex:[["car","汽车"],["hard","硬的"],["bird","鸟"],["four","四"]]}
+ ]
+},
+
+/* ===================== 主题词汇 ===================== */
+thematic: [
+ {cat:"学校类型", en:"Schools", items:[
+  ["nursery","托儿所"],["kindergarten","幼儿园"],["primary school","小学"],["middle school","中学"],
+  ["high school","高中"],["university","大学"],["college","学院"],["institute","研究院/学院"],
+  ["vocational school","职业学校"],["night school","夜校"],["graduate school","研究生院"]]},
+ {cat:"学校人员", en:"People at school", items:[
+  ["principal","校长"],["headmaster","校长"],["teacher","教师"],["professor","教授"],
+  ["lecturer","讲师"],["student","学生"],["pupil","小学生"],["classmate","同学"],
+  ["monitor","班长"],["head teacher","班主任"],["dean","教务长"],["freshman","大一新生"]]},
+ {cat:"科目", en:"Subjects", items:[
+  ["Chinese","语文"],["English","英语"],["maths","数学"],["physics","物理"],
+  ["chemistry","化学"],["biology","生物"],["history","历史"],["geography","地理"],
+  ["politics","政治"],["music","音乐"],["art","美术"],["P.E.","体育"],
+  ["computer science","计算机"],["geometry","几何"],["algebra","代数"]]},
+ {cat:"文具", en:"Stationery", items:[
+  ["pen","钢笔"],["pencil","铅笔"],["ballpoint pen","圆珠笔"],["eraser","橡皮"],
+  ["ruler","直尺"],["pencil case","文具盒"],["notebook","笔记本"],["textbook","课本"],
+  ["exercise book","练习本"],["chalk","粉笔"],["schoolbag","书包"],["stapler","订书机"],
+  ["paper clip","回形针"],["scissors","剪刀"],["glue","胶水"],["highlighter","荧光笔"],
+  ["marker","马克笔"],["compass","圆规"]]}
+],
+
+/* ===================== 读音规则（自然拼读）===================== */
+phonics: {
+ vowels: [
+  {l:"a", rows:[
+   {ipa:"eɪ", cond:"重读开音节（字母音）", ex:[["name","名字"],["cake","蛋糕"],["late","迟的"],["game","游戏"]]},
+   {ipa:"æ", cond:"重读闭音节", ex:[["cat","猫"],["map","地图"],["bad","坏的"],["hand","手"]]},
+   {ipa:"ɑː", cond:"在 s+辅音 / th / f 前", ex:[["ask","问"],["class","班级"],["fast","快的"],["after","以后"]]},
+   {ipa:"ɔː", cond:"在 l 前", ex:[["all","全部"],["ball","球"],["talk","说话"],["walk","走"]]}]},
+  {l:"e", rows:[
+   {ipa:"iː", cond:"重读开音节", ex:[["be","是"],["he","他"],["these","这些"],["Chinese","中文"]]},
+   {ipa:"e", cond:"重读闭音节", ex:[["bed","床"],["ten","十"],["get","得到"],["well","好"]]}]},
+  {l:"i / y", rows:[
+   {ipa:"aɪ", cond:"重读开音节", ex:[["time","时间"],["like","喜欢"],["nine","九"],["write","写"]]},
+   {ipa:"ɪ", cond:"重读闭音节", ex:[["big","大的"],["sit","坐"],["fish","鱼"],["ill","病的"]]},
+   {ipa:"aɪ", cond:"在 -ld / -nd / -ght 前", ex:[["child","孩子"],["find","找到"],["kind","善良的"],["night","夜"]]}]},
+  {l:"o", rows:[
+   {ipa:"əʊ", cond:"重读开音节", ex:[["go","去"],["no","不"],["home","家"],["those","那些"]]},
+   {ipa:"ɒ", cond:"重读闭音节", ex:[["box","盒子"],["hot","热的"],["stop","停"],["long","长的"]]},
+   {ipa:"ʌ", cond:"在 m / n / v / th 前（部分）", ex:[["come","来"],["son","儿子"],["love","爱"],["month","月"]]},
+   {ipa:"əʊ", cond:"在 -ld / -st 前", ex:[["old","旧的"],["cold","冷的"],["most","最"],["post","邮"]]}]},
+  {l:"u", rows:[
+   {ipa:"juː", cond:"重读开音节", ex:[["use","使用"],["music","音乐"],["student","学生"],["duty","职责"]]},
+   {ipa:"uː", cond:"在 l / r / j 之后", ex:[["blue","蓝的"],["true","真的"],["rule","规则"],["June","六月"]]},
+   {ipa:"ʌ", cond:"重读闭音节", ex:[["sun","太阳"],["but","但是"],["much","多"],["cup","杯子"]]},
+   {ipa:"ʊ", cond:"在 -ll 前 / b,p,f 之后", ex:[["full","满的"],["pull","拉"],["put","放"],["push","推"]]}]}
+ ],
+ combos: [
+  {c:"ai / ay", ipa:"eɪ", ex:[["rain","雨"],["wait","等"],["day","天"],["play","玩"]]},
+  {c:"ea", ipa:"iː / e", ex:[["sea","海"],["read","读"],["bread","面包"],["head","头"]]},
+  {c:"ee", ipa:"iː", ex:[["see","看"],["tree","树"],["green","绿"],["meet","遇见"]]},
+  {c:"oa", ipa:"əʊ", ex:[["boat","船"],["coat","外套"],["road","路"],["goat","山羊"]]},
+  {c:"oo", ipa:"uː / ʊ", ex:[["moon","月亮"],["food","食物"],["book","书"],["good","好"]]},
+  {c:"ou", ipa:"aʊ / ʌ", ex:[["house","房子"],["about","关于"],["young","年轻"],["country","国家"]]},
+  {c:"ow", ipa:"aʊ / əʊ", ex:[["how","怎样"],["now","现在"],["know","知道"],["show","展示"]]},
+  {c:"oi / oy", ipa:"ɔɪ", ex:[["oil","油"],["coin","硬币"],["boy","男孩"],["toy","玩具"]]},
+  {c:"au / aw", ipa:"ɔː", ex:[["autumn","秋"],["cause","原因"],["law","法律"],["draw","画"]]},
+  {c:"ew", ipa:"juː / uː", ex:[["new","新"],["few","少"],["grew","长大"],["flew","飞"]]},
+  {c:"ar", ipa:"ɑː", ex:[["car","汽车"],["far","远"],["hard","硬"],["party","聚会"]]},
+  {c:"or", ipa:"ɔː", ex:[["for","为"],["short","短"],["horse","马"],["north","北"]]},
+  {c:"er / ir / ur", ipa:"ɜː", ex:[["her","她"],["bird","鸟"],["girl","女孩"],["turn","转"]]},
+  {c:"air / are", ipa:"eə", ex:[["air","空气"],["hair","头发"],["chair","椅子"],["care","关心"]]},
+  {c:"ear / eer", ipa:"ɪə", ex:[["ear","耳朵"],["dear","亲爱"],["near","近"],["deer","鹿"]]}
+ ],
+ consonants: [
+  {c:"c", ipa:"k / s", note:"在 e/i/y 前读 [s]", ex:[["cat","猫"],["city","城市"],["face","脸"]]},
+  {c:"g", ipa:"g / dʒ", note:"在 e/i/y 前常读 [dʒ]", ex:[["go","去"],["age","年龄"],["large","大"]]},
+  {c:"ch", ipa:"tʃ / k / ʃ", note:"外来词读 [k] 或 [ʃ]", ex:[["chair","椅子"],["school","学校"],["machine","机器"]]},
+  {c:"sh", ipa:"ʃ", ex:[["she","她"],["fish","鱼"],["wash","洗"]]},
+  {c:"th", ipa:"θ / ð", note:"清辅音 [θ] 与浊辅音 [ð]", ex:[["think","想"],["three","三"],["this","这"]]},
+  {c:"ph", ipa:"f", ex:[["phone","电话"],["photo","照片"],["graph","图表"]]},
+  {c:"wh", ipa:"w / h", note:"在 o 前读 [h]", ex:[["what","什么"],["when","何时"],["who","谁"]]},
+  {c:"ng", ipa:"ŋ", ex:[["sing","唱"],["long","长"],["English","英语"]]},
+  {c:"ck", ipa:"k", ex:[["back","后面"],["clock","钟"],["duck","鸭"]]},
+  {c:"kn", ipa:"n", note:"k 不发音", ex:[["know","知道"],["knife","刀"],["knee","膝"]]},
+  {c:"wr", ipa:"r", note:"w 不发音", ex:[["write","写"],["wrong","错"],["wrap","包"]]},
+  {c:"qu", ipa:"kw", ex:[["quick","快"],["queen","女王"],["question","问题"]]}
+ ],
+ silent: [
+  {l:"b 不发音", ex:[["comb","梳子"],["climb","爬"],["doubt","怀疑"],["debt","债"]]},
+  {l:"k 不发音", ex:[["know","知道"],["knife","刀"],["knee","膝盖"]]},
+  {l:"w 不发音", ex:[["write","写"],["wrong","错"],["answer","回答"],["two","二"]]},
+  {l:"l 不发音", ex:[["half","一半"],["talk","说"],["calm","平静"],["could","能"]]},
+  {l:"h 不发音", ex:[["hour","小时"],["honest","诚实"],["honour","荣誉"]]},
+  {l:"gh 不发音", ex:[["light","光"],["night","夜"],["high","高"],["eight","八"]]},
+  {l:"t 不发音", ex:[["listen","听"],["often","常"],["castle","城堡"]]}
+ ],
+ endings: [
+  {c:"-tion / -sion", ipa:"ʃən", ex:[["nation","国家"],["action","行动"],["discussion","讨论"]]},
+  {c:"-ture", ipa:"tʃə", ex:[["picture","图画"],["future","未来"],["nature","自然"]]},
+  {c:"-sure", ipa:"ʒə", ex:[["measure","测量"],["pleasure","愉快"],["treasure","财宝"]]},
+  {c:"-ous", ipa:"əs", ex:[["famous","著名"],["nervous","紧张"],["dangerous","危险"]]},
+  {c:"-ai-/-tio 化音", ipa:"ʃ", ex:[["special","特别"],["patient","耐心"],["ancient","古代"]]}
+ ],
+ stress: [
+  "双音节的名词/形容词，重音多在第一个音节（ˈrecord 名词、ˈpresent 礼物、ˈobject 物体）；同形的动词重音移到后面（reˈcord 记录、preˈsent 呈现、obˈject 反对）——正是「同形异音」一章的规律。",
+  "以 -tion / -sion / -ic 结尾的词，重音落在该词尾前面一个音节：eduˈcation、scienˈtific、ecoˈnomic、deˈcision。",
+  "三个及以上音节的词，重音常在倒数第三个音节：ˈfamily、phoˈtographer、uniˈversity、deˈmocracy。"
+ ]
+}
 };
