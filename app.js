@@ -5,6 +5,8 @@ const $ = s => document.querySelector(s);
 const main = $('#main');
 const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=(i*7+i*i+3)%(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
 const rnd = (n)=>{ let x=0; for(let i=0;i<n;i++) x=(x+i*31+7)%97; return x; };
+const SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>';
+const say = w => `<button class="say" data-w="${(w||'').replace(/"/g,'&quot;')}" aria-label="朗读 ${w}" title="朗读">${SPK}</button>`;
 
 /* ---------- 模块定义 ---------- */
 const MODULES = [
@@ -156,7 +158,7 @@ function renderBrowse(mod){
  return '';
 }
 function affixCard(a){
- const ex=a.ex.map(e=>`<div class="ex"><span class="b">${e[0]} ${e[1]}</span><span class="ar2">→</span><span class="d">${e[2]}</span><span class="dc">${e[3]}</span></div>`).join('');
+ const ex=a.ex.map(e=>`<div class="ex"><span class="b">${e[0]} ${e[1]}</span><span class="ar2">→</span><span class="d">${e[2]}</span>${say(e[2])}<span class="dc">${e[3]}</span></div>`).join('');
  const note=a.note?`<div class="note">${a.note}</div>`:'';
  const sub=a.cat?(a.cat+' · '+a.me):(a.me);
  return `<div class="affix"><div class="affix-top" onclick="this.parentNode.classList.toggle('open')">
@@ -192,33 +194,33 @@ function browseFormation(){
 }
 function browseFamilies(){
  return '<div class="affix-list">'+V.families.map(f=>{
-   const mem=f.members.map(m=>`<div class="mem"><b>${m[0]}</b><span class="pos">${m[1]}</span><span class="mc">${m[2]}</span></div>`).join('');
+   const mem=f.members.map(m=>`<div class="mem"><b>${m[0]}</b>${say(m[0])}<span class="pos">${m[1]}</span><span class="mc">${m[2]}</span></div>`).join('');
    const note=f.note?`<div class="note">${f.note}</div>`:'';
    return `<div class="fam"><span class="root">${f.root}</span>${mem}${note}</div>`;
  }).join('')+'</div>';
 }
 function browseHomophones(){
  return '<div class="pair-list">'+V.homophones.map(h=>{
-   const w=h.words.map(x=>`<div class="w"><b>${x[0]}</b><span class="mc">${x[1]}</span></div>`).join('');
+   const w=h.words.map(x=>`<div class="w"><b>${x[0]}</b>${say(x[0])}<span class="mc">${x[1]}</span></div>`).join('');
    return `<div class="pcard"><span class="ipa">/${h.ipa}/</span>${w}</div>`;
  }).join('')+'</div>';
 }
 function browsePolysemy(){
  return '<div class="pair-list">'+V.polysemy.map(p=>{
    const s=p.senses.map(x=>`<div class="w"><span class="pos" style="background:var(--purple)">${x[0]}</span><span class="mc">${x[1]}</span></div>`).join('');
-   return `<div class="pcard"><div class="w" style="margin-bottom:4px"><b style="font-size:18px;font-family:var(--serif)">${p.w}</b></div>${s}</div>`;
+   return `<div class="pcard"><div class="w" style="margin-bottom:4px"><b style="font-size:18px;font-family:var(--serif)">${p.w}</b>${say(p.w)}</div>${s}</div>`;
  }).join('')+'</div>';
 }
 function browseHeteronyms(){
  return '<div class="pair-list">'+V.heteronyms.map(h=>{
    const r=h.readings.map(x=>`<div class="w"><span class="ipa" style="margin:0">/${x[0]}/</span><span class="pos">${x[1]}</span><span class="mc">${x[2]}</span></div>`).join('');
-   return `<div class="pcard"><div class="w" style="margin-bottom:6px"><b style="font-size:18px;font-family:var(--serif)">${h.w}</b></div>${r}</div>`;
+   return `<div class="pcard"><div class="w" style="margin-bottom:6px"><b style="font-size:18px;font-family:var(--serif)">${h.w}</b>${say(h.w)}</div>${r}</div>`;
  }).join('')+'</div>';
 }
 function browseSynonyms(){
  const cats=[...new Set(V.synonyms.map(s=>s.cat))]; let html='<div class="affix-list">';
  cats.forEach(c=>{ html+=`<div class="cat-band">${c}</div>`+V.synonyms.filter(s=>s.cat===c).map(s=>{
-   const it=s.group.map(g=>`<div class="it"><b>${g[0]}</b><span>${g[1]}</span></div>`).join('');
+   const it=s.group.map(g=>`<div class="it"><b>${g[0]}</b>${say(g[0])}<span>${g[1]}</span></div>`).join('');
    return `<div class="syn"><div class="hd">${s.note||c}</div>${it}</div>`;
  }).join(''); });
  return html+'</div>';
@@ -226,7 +228,7 @@ function browseSynonyms(){
 function browseAntonyms(){
  const cats=[...new Set(V.antonyms.map(p=>p.cat))]; let html='<div class="affix-list">';
  cats.forEach(c=>{ html+=`<div class="cat-band">${c}</div>`+V.antonyms.filter(p=>p.cat===c).map(p=>
-   `<div class="pcard"><div class="anto"><div class="side"><b>${p.a[0]}</b><span class="mc">${p.a[1]}</span></div><span class="ar3">⇄</span><div class="side r"><b>${p.b[0]}</b><span class="mc">${p.b[1]}</span></div></div></div>`
+   `<div class="pcard"><div class="anto"><div class="side"><b>${p.a[0]}</b>${say(p.a[0])}<span class="mc">${p.a[1]}</span></div><span class="ar3">⇄</span><div class="side r"><b>${p.b[0]}</b>${say(p.b[0])}<span class="mc">${p.b[1]}</span></div></div></div>`
  ).join(''); });
  return html+'</div>';
 }
@@ -256,7 +258,7 @@ function drawFlash(){
    <div class="fc-bar"><span>${fc.i+1} / ${fc.pool.length}</span><span class="prog"><i style="width:${fc.i/fc.pool.length*100}%"></i></span><span>认识 ${fc.right}</span></div>
    <div class="card" id="card" onclick="__flip()">
      <div class="q">${c.front}</div><div class="hint">${c.hint}　（点击翻面）</div>
-     <div class="a"><div class="dv">${c.back}</div><div class="mc">${backMc}</div><div class="sub">${c.sub}</div></div>
+     <div class="a"><div class="dv">${c.back} ${say(c.back)}</div><div class="mc">${backMc}</div><div class="sub">${c.sub}</div></div>
    </div>
    <div class="fc-actions" id="fcact" style="visibility:hidden">
      <button class="btn bad" onclick="__grade(false)">✗ 还不熟</button>
@@ -326,7 +328,7 @@ function doSearch(q){
  if(!hits.length){ html+='<div class="empty">没有找到匹配的词条。换个关键词试试？</div>'; main.innerHTML=html; return; }
  Object.keys(byMod).forEach(mk=>{
    html+=`<div class="sr-group"><h4>${MOD[mk].ic} ${MOD[mk].title}（${byMod[mk].length}）</h4><div class="pair-list">`;
-   byMod[mk].forEach(h=>{ html+=`<div class="pcard" style="padding:10px 13px"><div class="w"><b>${h.en}</b></div><div class="w"><span class="mc">${h.cn}</span></div><div style="font-size:11px;color:var(--ink-3);margin-top:3px">${h.extra}</div></div>`; });
+   byMod[mk].forEach(h=>{ html+=`<div class="pcard" style="padding:10px 13px"><div class="w"><b>${h.en}</b>${say(h.en)}</div><div class="w"><span class="mc">${h.cn}</span></div><div style="font-size:11px;color:var(--ink-3);margin-top:3px">${h.extra}</div></div>`; });
    html+='</div></div>';
  });
  main.innerHTML=html; paintTabs();
@@ -338,6 +340,30 @@ $('#search').addEventListener('input',e=>{ clearTimeout(stim); stim=setTimeout((
 const tabsEl=$('#tabs');
 tabsEl.innerHTML='<span class="tab" data-k="home" onclick="__go(\'home\')">首页</span>'+
  MODULES.map(m=>`<span class="tab" data-k="${m.key}" onclick="__go('${m.key}')">${m.title}</span>`).join('');
+/* ---------- 朗读（Web Speech API） ---------- */
+let VOICES=[];
+function loadVoices(){ try{ VOICES=window.speechSynthesis.getVoices()||[]; }catch(e){} }
+if(window.speechSynthesis){ loadVoices(); window.speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(w){
+ if(!w||!window.speechSynthesis) return;
+ const txt=w.replace(/\([^)]*\)/g,' ').replace(/[^a-zA-Z '\-]/g,' ').replace(/\s+/g,' ').trim();
+ if(!txt) return;
+ try{ window.speechSynthesis.cancel();
+   const u=new SpeechSynthesisUtterance(txt); u.lang='en-GB'; u.rate=.9;
+   if(!VOICES.length) loadVoices();
+   const v=VOICES.find(x=>/en[-_]GB/i.test(x.lang))||VOICES.find(x=>/^en/i.test(x.lang));
+   if(v) u.voice=v;
+   window.speechSynthesis.speak(u);
+ }catch(e){}
+}
+// 捕获阶段拦截喇叭点击，避免触发卡片翻面/词缀展开
+document.addEventListener('click',e=>{
+ const b=e.target.closest('.say'); if(!b) return;
+ e.stopPropagation(); e.preventDefault();
+ speak(b.dataset.w);
+ b.classList.add('on'); setTimeout(()=>b.classList.remove('on'),450);
+},true);
+
 $('#brand').addEventListener('click',()=>go('home'));
 go('home');
 })();

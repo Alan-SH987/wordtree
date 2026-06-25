@@ -170,4 +170,12 @@ main{max-width:var(--maxw);margin:0 auto;padding:22px 20px 80px}
 
 /* footer */
 footer{max-width:var(--maxw);margin:0 auto;padding:24px 20px 50px;color:var(--ink-2);font-size:12px;border-top:1px solid var(--line);text-align:center}
+/* 朗读按钮 */
+.say{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;padding:0;border:none;background:transparent;color:var(--ink-2);cursor:pointer;border-radius:6px;vertical-align:baseline;transition:.12s;opacity:.55}
+.say:hover{background:var(--accent-soft);color:var(--accent);opacity:1}
+.say:active{transform:scale(.88)}
+.say.on{color:var(--accent);opacity:1}
+.say svg{display:block;width:14px;height:14px}
+.card .a .say{width:26px;height:26px}
+.card .a .say svg{width:17px;height:17px}
 .hide{display:none!important}
