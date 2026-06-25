@@ -3,8 +3,7 @@
 const V = window.VOCAB;
 const $ = s => document.querySelector(s);
 const main = $('#main');
-const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=(i*7+i*i+3)%(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
-const rnd = (n)=>{ let x=0; for(let i=0;i<n;i++) x=(x+i*31+7)%97; return x; };
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 const SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>';
 const say = w => `<button class="say" data-w="${(w||'').replace(/"/g,'&quot;')}" aria-label="朗读 ${w}" title="朗读">${SPK}</button>`;
 
