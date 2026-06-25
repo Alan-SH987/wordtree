@@ -165,7 +165,7 @@ function renderHome(){
  const totalWords = estimateWords();
  main.innerHTML = `
  <div class="hero">
-   <h1>WordTree 词树</h1>
+   <h1>WordTree 词树<span class="owner">（Shirley专用软件）</span></h1>
    <div class="sub">不要孤立地死记单词。把词按 <b>音、形、义、根</b> 成组归纳，相互联系着记——这是本资料的核心方法。从下面任选一个模块开始：浏览成组词表，或用抽认卡 / 测验主动回忆。</div>
    <div class="from">改编自《怎样学习英语词汇》（董石祥编，南宁师专英语科，1978）· 方法框架取自原书，例词已现代化、勘误并补充常用词 · 共收录约 ${totalWords}+ 词条</div>
  </div>

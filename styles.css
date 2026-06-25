@@ -28,6 +28,8 @@ header.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--b
 .brand{display:flex;flex-direction:column;line-height:1.15;cursor:pointer}
 .brand b{font-size:17px;font-weight:600;letter-spacing:.2px}
 .brand small{font-size:11px;color:var(--ink-2);font-family:var(--serif);letter-spacing:.5px}
+.owner{font-size:13px;font-weight:400;color:var(--accent);white-space:nowrap}
+.hero h1 .owner{font-size:15px}
 .search{margin-left:auto;position:relative}
 .search input{width:230px;max-width:42vw;padding:8px 12px 8px 34px;border:1px solid var(--line-2);border-radius:999px;
   background:var(--surface);color:var(--ink);font-size:14px;outline:none;transition:.15s}
