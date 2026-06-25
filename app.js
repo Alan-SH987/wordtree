@@ -10,14 +10,14 @@ const say = w => `<button class="say" data-w="${(w||'').replace(/"/g,'&quot;')}"
 
 /* ---------- 模块定义 ---------- */
 const MODULES = [
- {key:'prefixes', ic:'⊕', col:'var(--accent)', bg:'var(--accent-soft)', title:'前缀', sub:'用词头批量推词', modes:['browse','flashcard']},
- {key:'suffixes', ic:'⊗', col:'var(--teal)', bg:'var(--teal-soft)', title:'后缀', sub:'变换词性与词义', modes:['browse','flashcard']},
+ {key:'prefixes', ic:'⊕', col:'var(--accent)', bg:'var(--accent-soft)', title:'前缀', sub:'用词头批量推词', modes:['browse','flashcard','quiz']},
+ {key:'suffixes', ic:'⊗', col:'var(--teal)', bg:'var(--teal-soft)', title:'后缀', sub:'变换词性与词义', modes:['browse','flashcard','quiz']},
  {key:'formation', ic:'⚙', col:'var(--gold)', bg:'var(--gold-soft)', title:'其他构词法', sub:'合成·转换·缩略·屈折', modes:['browse']},
- {key:'families', ic:'🌳', col:'var(--teal)', bg:'var(--teal-soft)', title:'同族词', sub:'一根多词，成串记忆', modes:['browse','flashcard']},
- {key:'homophones', ic:'🔊', col:'var(--blue)', bg:'var(--blue-soft)', title:'同音异义', sub:'音同形异，对比辨别', modes:['browse','quiz']},
- {key:'polysemy', ic:'⇆', col:'var(--purple)', bg:'var(--purple-soft)', title:'一词多义', sub:'同一拼写，多种含义', modes:['browse','flashcard']},
- {key:'heteronyms', ic:'♪', col:'var(--blue)', bg:'var(--blue-soft)', title:'同形异音', sub:'重音/读音变，词义变', modes:['browse','flashcard']},
- {key:'synonyms', ic:'≈', col:'var(--purple)', bg:'var(--purple-soft)', title:'近义词辨析', sub:'相近词的用法区别', modes:['browse']},
+ {key:'families', ic:'🌳', col:'var(--teal)', bg:'var(--teal-soft)', title:'同族词', sub:'一根多词，成串记忆', modes:['browse','flashcard','quiz']},
+ {key:'homophones', ic:'🔊', col:'var(--blue)', bg:'var(--blue-soft)', title:'同音异义', sub:'音同形异，对比辨别', modes:['browse','flashcard','quiz']},
+ {key:'polysemy', ic:'⇆', col:'var(--purple)', bg:'var(--purple-soft)', title:'一词多义', sub:'同一拼写，多种含义', modes:['browse','flashcard','quiz']},
+ {key:'heteronyms', ic:'♪', col:'var(--blue)', bg:'var(--blue-soft)', title:'同形异音', sub:'重音/读音变，词义变', modes:['browse','flashcard','quiz']},
+ {key:'synonyms', ic:'≈', col:'var(--purple)', bg:'var(--purple-soft)', title:'近义词辨析', sub:'相近词的用法区别', modes:['browse','flashcard','quiz']},
  {key:'antonyms', ic:'⇄', col:'var(--accent)', bg:'var(--accent-soft)', title:'反义词', sub:'成对掌握，事半功倍', modes:['browse','flashcard','quiz']}
 ];
 const MOD = Object.fromEntries(MODULES.map(m=>[m.key,m]));
@@ -48,9 +48,17 @@ function deckOf(mod){
      {k:f.root+'|'+m[0], front:m[2], hint:'('+m[1]+')  词根 '+f.root+'  →  英文?', back:m[0], mc:m[2], sub:'同族词 · '+f.root}))); return out; }
  if(mod==='heteronyms') return V.heteronyms.map(h=>({k:h.w, front:h.w, hint:'两种读法与词义？', back:h.w, mc:h.readings.map(r=>'/'+r[0]+'/  '+r[1]+'  '+r[2]).join('\n'), sub:'同形异音'}));
  if(mod==='antonyms') return V.antonyms.map(p=>({k:p.a[0]+'|'+p.b[0], front:p.a[0], hint:p.a[1]+'  的反义词?', back:p.b[0], mc:p.b[1], sub:'反义词'}));
+ if(mod==='homophones'){ const out=[]; V.homophones.forEach(h=>h.words.forEach(w=>out.push(
+   {k:h.ipa+'|'+w[0], front:w[1], hint:'/'+h.ipa+'/  —  怎么拼?', back:w[0], mc:w[1]+'   /'+h.ipa+'/', sub:'同音异义 · 听音辨形'}))); return out; }
+ if(mod==='synonyms'){ const out=[]; V.synonyms.forEach(s=>s.group.forEach(g=>out.push(
+   {k:(s.note||s.cat)+'|'+g[0], front:g[0], hint:'意思 / 用法?', back:g[0], mc:g[1], sub:'近义辨析 · '+(s.note||s.cat)}))); return out; }
  return [];
 }
 function quizOf(mod){
+ if(mod==='prefixes'||mod==='suffixes'){ const all=V[mod].flatMap(a=>a.ex.map(e=>({d:e[2],cn:e[3]})));
+   return all.map(x=>{ const pool=all.filter(y=>y.cn!==x.cn);
+     const opts=shuffle([x.cn,...shuffle(pool).slice(0,3).map(y=>y.cn)]);
+     return {stem:x.d, sub:'选出它的意思', answer:x.cn, options:opts}; }); }
  if(mod==='antonyms') return V.antonyms.map(p=>{
    const pool=V.antonyms.filter(x=>x.cat===p.cat&&x.b[0]!==p.b[0]).map(x=>x.b[0]);
    const opts=shuffle([p.b[0],...shuffle(pool).slice(0,3)]);
@@ -61,6 +69,21 @@ function quizOf(mod){
    if(opts.length<4){ const others=shuffle(V.homophones.flatMap(x=>x.words.map(w=>w[0])).filter(w=>!opts.includes(w))); opts=opts.concat(others.slice(0,4-opts.length)); }
    return {stem:'/'+h.ipa+'/', sub:t[1]+'  —  选出对应拼写', answer:t[0], options:shuffle(opts)};
  });
+ if(mod==='families'){ const all=V.families.flatMap(f=>f.members.map(m=>({w:m[0],pos:m[1],cn:m[2],root:f.root})));
+   return all.map(m=>{ const pool=all.filter(x=>x.w!==m.w);
+     const opts=shuffle([m.w,...shuffle(pool).slice(0,3).map(x=>x.w)]);
+     return {stem:m.cn+'   ('+m.pos+')', sub:'词根 '+m.root+'  —  选出对应单词', answer:m.w, options:opts}; }); }
+ if(mod==='polysemy'){ const allSenses=[...new Set(V.polysemy.flatMap(p=>p.senses.map(s=>s[1])))];
+   return V.polysemy.map(p=>{ const correct=p.senses[0][1];
+     const distract=shuffle(allSenses.filter(s=>!p.senses.some(x=>x[1]===s))).slice(0,3);
+     return {stem:p.w, sub:'选出它的含义之一', answer:correct, options:shuffle([correct,...distract])}; }); }
+ if(mod==='heteronyms'){ return V.heteronyms.map(h=>{ const t=h.readings[0];
+     const opts=h.readings.map(r=>'/'+r[0]+'/ ('+r[1]+')');
+     return {stem:h.w+'  —  '+t[2], sub:'选出对应的读法', answer:'/'+t[0]+'/ ('+t[1]+')', options:shuffle(opts)}; }); }
+ if(mod==='synonyms'){ const allGloss=[...new Set(V.synonyms.flatMap(s=>s.group.map(g=>g[1])))];
+   return V.synonyms.flatMap(s=>s.group.map(g=>{ let opts=s.group.map(x=>x[1]);
+     if(opts.length<3) opts=opts.concat(shuffle(allGloss.filter(x=>!opts.includes(x))).slice(0,3-opts.length));
+     return {stem:g[0], sub:'选出它的含义 / 用法', answer:g[1], options:shuffle(opts)}; })); }
  return [];
 }
 
@@ -130,7 +153,7 @@ function renderHome(){
  <div class="grid">${cards}</div>`;
 }
 function deckTotal(mod){
- if(mod==='formation'||mod==='synonyms') return 0;
+ if(mod==='formation') return 0;
  if(MOD[mod].modes.includes('flashcard')) return deckOf(mod).length;
  if(MOD[mod].modes.includes('quiz')) return quizOf(mod).length;
  return 0;
